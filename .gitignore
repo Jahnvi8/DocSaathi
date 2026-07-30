@@ -11,6 +11,7 @@ server/data/*.json
 # build output
 server/dist/
 client/dist/
+*.tsbuildinfo
 
 # logs & misc
 *.log

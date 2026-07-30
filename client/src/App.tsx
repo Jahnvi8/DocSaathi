@@ -7,7 +7,7 @@ import { ChatPanel } from "./components/ChatPanel";
 import { DocumentViewer } from "./components/DocumentViewer";
 
 export default function App() {
-  const { messages, busy, ask } = useChatStream();
+  const { messages, busy, ask, summarize } = useChatStream();
   const [docs, setDocs] = useState<IndexedDoc[]>([]);
   const [hasApiKey, setHasApiKey] = useState(true); // assume ok until told otherwise
   const [activeCitation, setActiveCitation] = useState<Citation | null>(null);
@@ -23,8 +23,9 @@ export default function App() {
 
   const onUploaded = (result: UploadResult) => {
     listDocuments().then(setDocs).catch(() => {});
-    // If this is the first doc, keep things tidy; no message needed.
-    void result;
+    // Kick off a streamed summary as the first assistant message, so the user
+    // immediately sees what's in the document before asking questions.
+    summarize(result.docId);
   };
 
   const hasDocs = docs.length > 0;

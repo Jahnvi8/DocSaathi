@@ -32,23 +32,38 @@ export async function getDocumentChunks(docId: string): Promise<PublicChunk[]> {
   return (data.chunks ?? []) as PublicChunk[];
 }
 
-/**
- * Send a question and consume the Server-Sent Events stream, invoking `onEvent`
- * for each parsed event ({type:"token"|"citations"|"done"|"error"}).
- *
- * We use fetch (not the native EventSource) because EventSource can only do GET
- * with no body — we need to POST the question. The server sends SSE frames
- * ("data: {...}\n\n"); we read the response as a stream and parse them out.
- */
+// We consume SSE with fetch (not the native EventSource) because EventSource can
+// only do GET with no body — we need to POST the question/docId. The server sends
+// SSE frames ("data: {...}\n\n") which streamSSE (below) reads and parses.
+
+/** Stream a summary of a just-uploaded document (same SSE contract as chat). */
+export async function streamSummary(
+  docId: string,
+  onEvent: (event: ChatStreamEvent) => void,
+  signal?: AbortSignal
+): Promise<void> {
+  return streamSSE("/api/summary", { docId }, onEvent, signal);
+}
+
 export async function streamChat(
   question: string,
   onEvent: (event: ChatStreamEvent) => void,
   signal?: AbortSignal
 ): Promise<void> {
-  const res = await fetch("/api/chat", {
+  return streamSSE("/api/chat", { question }, onEvent, signal);
+}
+
+/** Shared Server-Sent Events reader: POST a JSON body, parse `data:` frames. */
+async function streamSSE(
+  url: string,
+  body: Record<string, unknown>,
+  onEvent: (event: ChatStreamEvent) => void,
+  signal?: AbortSignal
+): Promise<void> {
+  const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ question }),
+    body: JSON.stringify(body),
     signal,
   });
 

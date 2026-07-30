@@ -4,6 +4,7 @@ import { config, hasApiKey } from "./config.js";
 import uploadRouter from "./routes/upload.js";
 import documentsRouter from "./routes/documents.js";
 import chatRouter from "./routes/chat.js";
+import summaryRouter from "./routes/summary.js";
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.get("/api/health", (_req, res) => {
 app.use("/api/upload", uploadRouter);
 app.use("/api/documents", documentsRouter);
 app.use("/api/chat", chatRouter);
+app.use("/api/summary", summaryRouter);
 
 // Central error handler. Any error thrown in a route (or passed to next(err))
 // lands here and returns a clean JSON message instead of crashing the process.

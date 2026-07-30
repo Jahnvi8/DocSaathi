@@ -1,11 +1,12 @@
 import { useRef, useState, type DragEvent } from "react";
 import { uploadFile, type UploadResult } from "../lib/api";
+import { useToast } from "./Toaster";
 
 interface Props {
   onUploaded: (result: UploadResult) => void;
 }
 
-type Status = { kind: "idle" } | { kind: "uploading"; name: string } | { kind: "error"; message: string };
+type Status = { kind: "idle" } | { kind: "uploading"; name: string };
 
 /**
  * Drag-and-drop (or click) upload area. Accepts a single PDF or .txt, sends it
@@ -15,6 +16,7 @@ export function UploadDropzone({ onUploaded }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const [dragging, setDragging] = useState(false);
+  const toast = useToast();
 
   async function handleFile(file: File | undefined) {
     if (!file) return;
@@ -22,9 +24,11 @@ export function UploadDropzone({ onUploaded }: Props) {
     try {
       const result = await uploadFile(file);
       setStatus({ kind: "idle" });
+      toast.success(`“${result.source}” uploaded — ${result.chunkCount} chunks indexed.`);
       onUploaded(result);
     } catch (err) {
-      setStatus({ kind: "error", message: err instanceof Error ? err.message : "Upload failed." });
+      setStatus({ kind: "idle" });
+      toast.error(err instanceof Error ? err.message : "Upload failed.");
     }
   }
 
@@ -81,12 +85,6 @@ export function UploadDropzone({ onUploaded }: Props) {
           </>
         )}
       </div>
-
-      {status.kind === "error" && (
-        <p role="alert" className="mt-2 text-sm text-red-600">
-          {status.message}
-        </p>
-      )}
     </div>
   );
 }

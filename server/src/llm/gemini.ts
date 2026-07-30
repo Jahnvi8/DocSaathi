@@ -115,7 +115,9 @@ Rules:
    - English question → answer in English.
    - Hindi question (Devanagari script) → answer in Hindi (Devanagari).
    - Hinglish question (Hindi written in Latin script / mixed) → answer in Hinglish, matching their casual mixed style.
-5. Be concise, accurate, and helpful.`;
+5. TONE: Write like a helpful assistant having a conversation — explain the answer in your OWN words. Do NOT paste or dump raw passages from the document. Keep it natural and easy to read; use short paragraphs or a few bullet points when that helps.
+6. Open with the direct answer to what was asked, then add only the detail that's needed. Be concise and accurate.
+7. When referring to a person, use their name or gender-neutral language (they/them). Do NOT infer gender from a name unless the document explicitly states pronouns.`;
 
 /** Build the user-turn prompt: the numbered sources followed by the question. */
 function buildPrompt(question: string, scored: ScoredChunk[]): string {
@@ -146,6 +148,40 @@ export async function* streamAnswer(
   // stream is flowing we don't retry mid-answer.
   const result = await withRetry(() =>
     model.generateContentStream(buildPrompt(question, scored))
+  );
+  for await (const chunk of result.stream) {
+    const text = chunk.text();
+    if (text) yield text;
+  }
+}
+
+// Shown right after upload so the user immediately knows what's in their
+// document and feels invited to start asking questions.
+const SUMMARY_SYSTEM = `You are DocSaathi. The user just uploaded a document. Write a short, friendly summary so they know what it contains.
+
+Guidelines:
+- Start with a one-line lead-in that names the document, e.g. Here's a quick summary of "<filename>":
+- Then give 3-5 sentences OR a few concise bullet points covering the main topics and key points.
+- Be conversational and synthesize in your OWN words — do not copy text verbatim.
+- Write in the document's primary language (English / Hindi / Hinglish).
+- End with a short line inviting the user to ask questions about it.
+- When referring to a person, use their name or gender-neutral language (they/them). Do NOT infer or assume gender from a name unless the document explicitly states pronouns.
+- Never invent information that isn't in the document.`;
+
+/** Stream a friendly summary of a freshly-uploaded document, token by token. */
+export async function* streamSummary(
+  source: string,
+  chunkTexts: string[]
+): AsyncGenerator<string> {
+  const model = getGenAI().getGenerativeModel({
+    model: config.chatModel,
+    systemInstruction: SUMMARY_SYSTEM,
+  });
+
+  // Cap the content we send so a huge document doesn't blow the context/quota.
+  const content = chunkTexts.join("\n\n").slice(0, 8000);
+  const result = await withRetry(() =>
+    model.generateContentStream(`Document filename: ${source}\n\nDocument content:\n${content}`)
   );
   for await (const chunk of result.stream) {
     const text = chunk.text();
