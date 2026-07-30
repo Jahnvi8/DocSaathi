@@ -91,6 +91,19 @@ export function isEmpty(): boolean {
   return load().length === 0;
 }
 
+/** Remove all chunks for a document and persist. Returns how many were removed. */
+export function deleteDocument(docId: string): number {
+  const all = load();
+  const kept = all.filter((c) => c.docId !== docId);
+  const removed = all.length - kept.length;
+  if (removed > 0) {
+    chunks = kept; // replace the in-memory cache
+    version += 1; // invalidate derived indexes (BM25)
+    persist();
+  }
+  return removed;
+}
+
 /** All indexed chunks (with embeddings). Used to build the BM25 keyword index. */
 export function getAllChunks(): StoredChunk[] {
   return load();
@@ -153,9 +166,13 @@ export interface ScoredChunk {
   score: number;
 }
 
-/** Return the top-k chunks most similar to the query embedding. */
-export function search(queryEmbedding: number[], topK: number): ScoredChunk[] {
-  return load()
+/**
+ * Return the top-k chunks most similar to the query embedding. If `docId` is
+ * given, search is scoped to just that document.
+ */
+export function search(queryEmbedding: number[], topK: number, docId?: string): ScoredChunk[] {
+  const pool = docId ? load().filter((c) => c.docId === docId) : load();
+  return pool
     .map((chunk) => ({ chunk, score: cosineSimilarity(queryEmbedding, chunk.embedding) }))
     .sort((a, b) => b.score - a.score)
     .slice(0, topK);

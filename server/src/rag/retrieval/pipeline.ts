@@ -43,7 +43,8 @@ export interface RetrievalResult {
  */
 export async function runRetrieval(
   question: string,
-  cfg: RetrievalConfig = config.retrieval
+  cfg: RetrievalConfig = config.retrieval,
+  docId?: string
 ): Promise<RetrievalResult> {
   const stages: string[] = [];
 
@@ -58,13 +59,13 @@ export async function runRetrieval(
   const perQueryLists: RankedId[][] = [];
   for (const q of queries) {
     const queryEmbedding = await embedQuery(q);
-    const vectorList: RankedId[] = search(queryEmbedding, cfg.candidateK).map((s) => ({
+    const vectorList: RankedId[] = search(queryEmbedding, cfg.candidateK, docId).map((s) => ({
       id: s.chunk.id,
       score: s.score,
     }));
 
     if (cfg.hybrid) {
-      const keywordList = bm25Search(q, cfg.candidateK);
+      const keywordList = bm25Search(q, cfg.candidateK, docId);
       perQueryLists.push(reciprocalRankFusion([vectorList, keywordList], cfg.candidateK));
     } else {
       perQueryLists.push(vectorList);

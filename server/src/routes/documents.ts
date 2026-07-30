@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { listDocuments, getDocumentChunks } from "../rag/store.js";
+import { listDocuments, getDocumentChunks, deleteDocument } from "../rag/store.js";
 
 const router = Router();
 
@@ -16,6 +16,15 @@ router.get("/:docId/chunks", (req, res) => {
     return res.status(404).json({ error: "Document not found." });
   }
   res.json({ docId: req.params.docId, chunks });
+});
+
+// DELETE /api/documents/:docId — remove a document (and all its chunks) from the index.
+router.delete("/:docId", (req, res) => {
+  const removed = deleteDocument(req.params.docId);
+  if (removed === 0) {
+    return res.status(404).json({ error: "Document not found." });
+  }
+  res.json({ docId: req.params.docId, removed });
 });
 
 export default router;

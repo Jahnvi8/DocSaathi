@@ -7,6 +7,17 @@ function uid(): string {
   return crypto.randomUUID();
 }
 
+/** Turn raw API errors into something a user can actually act on. */
+function friendlyError(message: string): string {
+  if (/\b429\b|too many requests|quota|rate limit/i.test(message)) {
+    return "The AI is over its free-tier rate limit right now. Please wait a minute and try again.";
+  }
+  if (/GEMINI_API_KEY/i.test(message)) {
+    return "No API key configured on the server. Add GEMINI_API_KEY to .env and restart.";
+  }
+  return message;
+}
+
 type StreamStarter = (
   onEvent: (event: ChatStreamEvent) => void,
   signal: AbortSignal
@@ -52,7 +63,11 @@ export function useChatStream() {
               patch(assistantId, { retrievalStages: event.stages });
               break;
             case "error":
-              patch(assistantId, { content: event.message, error: true, streaming: false });
+              patch(assistantId, {
+                content: friendlyError(event.message),
+                error: true,
+                streaming: false,
+              });
               break;
             case "done":
               patch(assistantId, { streaming: false });
@@ -61,7 +76,7 @@ export function useChatStream() {
         }, controller.signal);
       } catch (err) {
         const message = err instanceof Error ? err.message : "Something went wrong.";
-        patch(assistantId, { content: message, error: true, streaming: false });
+        patch(assistantId, { content: friendlyError(message), error: true, streaming: false });
       } finally {
         patch(assistantId, { streaming: false });
         setBusy(false);
@@ -71,9 +86,10 @@ export function useChatStream() {
     [patch]
   );
 
-  /** Ask a question — optimistic user bubble + streamed assistant answer. */
+  /** Ask a question — optimistic user bubble + streamed assistant answer.
+   *  Pass a `docId` to scope the answer to a single selected document. */
   const ask = useCallback(
-    async (question: string) => {
+    async (question: string, docId?: string) => {
       const q = question.trim();
       if (!q || busy) return;
 
@@ -83,7 +99,7 @@ export function useChatStream() {
         { id: uid(), role: "user", content: q },
         { id: assistantId, role: "assistant", content: "", streaming: true },
       ]);
-      await runAssistant(assistantId, (onEvent, signal) => streamChat(q, onEvent, signal));
+      await runAssistant(assistantId, (onEvent, signal) => streamChat(q, onEvent, signal, docId));
     },
     [busy, runAssistant]
   );

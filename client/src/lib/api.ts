@@ -24,6 +24,15 @@ export async function listDocuments(): Promise<IndexedDoc[]> {
   return (data.documents ?? []) as IndexedDoc[];
 }
 
+/** Delete an indexed document (and all its chunks). */
+export async function deleteDocument(docId: string): Promise<void> {
+  const res = await fetch(`/api/documents/${encodeURIComponent(docId)}`, { method: "DELETE" });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || "Could not delete the document.");
+  }
+}
+
 /** Fetch a document's chunks (text only) for the source viewer. */
 export async function getDocumentChunks(docId: string): Promise<PublicChunk[]> {
   const res = await fetch(`/api/documents/${encodeURIComponent(docId)}/chunks`);
@@ -48,9 +57,11 @@ export async function streamSummary(
 export async function streamChat(
   question: string,
   onEvent: (event: ChatStreamEvent) => void,
-  signal?: AbortSignal
+  signal?: AbortSignal,
+  docId?: string
 ): Promise<void> {
-  return streamSSE("/api/chat", { question }, onEvent, signal);
+  // docId (optional) scopes retrieval to a single selected document.
+  return streamSSE("/api/chat", { question, ...(docId ? { docId } : {}) }, onEvent, signal);
 }
 
 /** Shared Server-Sent Events reader: POST a JSON body, parse `data:` frames. */

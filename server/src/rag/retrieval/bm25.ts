@@ -25,6 +25,7 @@ function tokenize(text: string): string[] {
 
 interface IndexedDoc {
   id: string;
+  docId: string;
   length: number;
   termFreq: Map<string, number>;
 }
@@ -44,7 +45,7 @@ function build(chunks: StoredChunk[], version: number): Bm25Index {
     const tokens = tokenize((c.context ? `${c.context} ` : "") + c.text);
     const termFreq = new Map<string, number>();
     for (const term of tokens) termFreq.set(term, (termFreq.get(term) ?? 0) + 1);
-    return { id: c.id, length: tokens.length, termFreq };
+    return { id: c.id, docId: c.docId, length: tokens.length, termFreq };
   });
 
   // Document frequency: in how many docs does each term appear?
@@ -77,12 +78,16 @@ function getIndex(): Bm25Index {
   return cached;
 }
 
-/** Rank chunks by BM25 score for the query. Returns up to `limit` scored ids. */
-export function bm25Search(query: string, limit: number): RankedId[] {
+/**
+ * Rank chunks by BM25 score for the query. Returns up to `limit` scored ids.
+ * If `docId` is given, scoring is scoped to just that document.
+ */
+export function bm25Search(query: string, limit: number, docId?: string): RankedId[] {
   const index = getIndex();
   const queryTerms = tokenize(query);
 
-  const results: RankedId[] = index.docs.map((doc) => {
+  const docs = docId ? index.docs.filter((d) => d.docId === docId) : index.docs;
+  const results: RankedId[] = docs.map((doc) => {
     let score = 0;
     for (const term of queryTerms) {
       const freq = doc.termFreq.get(term);

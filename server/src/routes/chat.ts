@@ -19,6 +19,8 @@ function send(res: Response, data: unknown): void {
 // native EventSource because EventSource can only issue GET requests with no body.
 router.post("/", async (req: Request, res: Response) => {
   const question = String(req.body?.question ?? "").trim();
+  // Optional: scope retrieval to a single selected document.
+  const docId = req.body?.docId ? String(req.body.docId) : undefined;
 
   // Set up the SSE stream up front so even errors are delivered as events.
   res.setHeader("Content-Type", "text/event-stream");
@@ -56,7 +58,7 @@ router.post("/", async (req: Request, res: Response) => {
 
     // Retrieve first so citations can be sent before the answer streams — the UI
     // then has the source list ready as [n] markers appear in the text.
-    const { scored, trace } = await retrieveWithTrace(question);
+    const { scored, trace } = await retrieveWithTrace(question, docId);
 
     // Surface which retrieval stages ran (nice for demos and the UI).
     send(res, { type: "trace", stages: trace.stages, candidateCount: trace.candidateCount });

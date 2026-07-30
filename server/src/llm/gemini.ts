@@ -160,8 +160,9 @@ export async function* streamAnswer(
 const SUMMARY_SYSTEM = `You are DocSaathi. The user just uploaded a document. Write a short, friendly summary so they know what it contains.
 
 Guidelines:
+- Keep it SHORT and fast to read.
 - Start with a one-line lead-in that names the document, e.g. Here's a quick summary of "<filename>":
-- Then give 3-5 sentences OR a few concise bullet points covering the main topics and key points.
+- Then give 2-3 sentences OR 3-4 short bullet points covering only the main topics/key points.
 - Be conversational and synthesize in your OWN words — do not copy text verbatim.
 - Write in the document's primary language (English / Hindi / Hinglish).
 - End with a short line inviting the user to ask questions about it.
@@ -178,8 +179,9 @@ export async function* streamSummary(
     systemInstruction: SUMMARY_SYSTEM,
   });
 
-  // Cap the content we send so a huge document doesn't blow the context/quota.
-  const content = chunkTexts.join("\n\n").slice(0, 8000);
+  // Only summarize the opening of the document — much faster and cheaper than
+  // sending the whole thing, and enough for a useful overview.
+  const content = chunkTexts.join("\n\n").slice(0, 4000);
   const result = await withRetry(() =>
     model.generateContentStream(`Document filename: ${source}\n\nDocument content:\n${content}`)
   );

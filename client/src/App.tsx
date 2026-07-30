@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
 import type { Citation, IndexedDoc } from "./types";
-import { listDocuments, type UploadResult } from "./lib/api";
+import { listDocuments, deleteDocument, type UploadResult } from "./lib/api";
 import { useChatStream } from "./hooks/useChatStream";
+import { useToast } from "./components/Toaster";
 import { UploadDropzone } from "./components/UploadDropzone";
 import { ChatPanel } from "./components/ChatPanel";
 import { DocumentViewer } from "./components/DocumentViewer";
 
 export default function App() {
   const { messages, busy, ask, summarize } = useChatStream();
+  const toast = useToast();
   const [docs, setDocs] = useState<IndexedDoc[]>([]);
   const [hasApiKey, setHasApiKey] = useState(true); // assume ok until told otherwise
   const [activeCitation, setActiveCitation] = useState<Citation | null>(null);
+  // Which document the chat is scoped to (null = search across all documents).
+  const [selectedDocId, setSelectedDocId] = useState<string | null>(null);
 
   // On mount: check server health (is a key configured?) and load indexed docs.
   useEffect(() => {
@@ -28,7 +32,22 @@ export default function App() {
     summarize(result.docId);
   };
 
+  const handleDelete = async (doc: IndexedDoc) => {
+    if (!window.confirm(`Delete “${doc.source}”? This removes it from the index.`)) return;
+    try {
+      await deleteDocument(doc.docId);
+      if (selectedDocId === doc.docId) setSelectedDocId(null);
+      setActiveCitation((c) => (c?.docId === doc.docId ? null : c));
+      const next = await listDocuments();
+      setDocs(next);
+      toast.success(`Deleted “${doc.source}”.`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not delete the document.");
+    }
+  };
+
   const hasDocs = docs.length > 0;
+  const selectedDoc = docs.find((d) => d.docId === selectedDocId) ?? null;
 
   return (
     <div className="flex h-screen flex-col">
@@ -75,16 +94,44 @@ export default function App() {
           <div className="border-b border-slate-200 bg-white p-3">
             <UploadDropzone onUploaded={onUploaded} />
             {hasDocs && (
-              <ul className="mt-2 flex flex-wrap gap-1.5" aria-label="Indexed documents">
-                {docs.map((d) => (
-                  <li
-                    key={d.docId}
-                    className="rounded-full bg-brand-50 px-2.5 py-0.5 text-xs text-brand-700"
-                  >
-                    📄 {d.source} · {d.chunkCount} chunks
-                  </li>
-                ))}
-              </ul>
+              <>
+                <ul className="mt-2 space-y-1" aria-label="Indexed documents">
+                  {docs.map((d) => {
+                    const active = d.docId === selectedDocId;
+                    return (
+                      <li key={d.docId} className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedDocId(active ? null : d.docId)}
+                          aria-pressed={active}
+                          title={active ? "Click to search all documents" : "Click to ask only this document"}
+                          className={`flex-1 truncate rounded-md px-2 py-1 text-left text-xs transition ${
+                            active
+                              ? "bg-brand-600 text-white"
+                              : "bg-brand-50 text-brand-700 hover:bg-brand-100"
+                          }`}
+                        >
+                          📄 {d.source} · {d.chunkCount} chunks
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(d)}
+                          aria-label={`Delete ${d.source}`}
+                          title="Delete document"
+                          className="rounded-md p-1 text-slate-400 transition hover:bg-red-50 hover:text-red-600"
+                        >
+                          🗑️
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+                <p className="mt-1.5 text-[11px] text-slate-500">
+                  {selectedDoc
+                    ? `Answering from “${selectedDoc.source}” only — click it again to search all.`
+                    : "Answering from all documents — click one to focus it."}
+                </p>
+              </>
             )}
           </div>
           <div className="min-h-0 flex-1">
@@ -92,7 +139,7 @@ export default function App() {
               messages={messages}
               busy={busy}
               hasDocs={hasDocs}
-              onSend={ask}
+              onSend={(text) => ask(text, selectedDocId ?? undefined)}
               onCitationClick={setActiveCitation}
             />
           </div>
