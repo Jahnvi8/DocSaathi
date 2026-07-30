@@ -12,8 +12,14 @@ function friendlyError(message: string): string {
   if (/\b429\b|too many requests|quota|rate limit/i.test(message)) {
     return "The AI is over its free-tier rate limit right now. Please wait a minute and try again.";
   }
+  if (/\b503\b|service unavailable|high demand|overloaded|unavailable|try again later/i.test(message)) {
+    return "The AI is temporarily busy (high demand on Google's side). Please try again in a moment.";
+  }
   if (/GEMINI_API_KEY/i.test(message)) {
     return "No API key configured on the server. Add GEMINI_API_KEY to .env and restart.";
+  }
+  if (/failed to fetch|networkerror|load failed/i.test(message)) {
+    return "Couldn't reach the server. Check that it's running, then try again.";
   }
   return message;
 }
