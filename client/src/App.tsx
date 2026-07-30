@@ -27,9 +27,10 @@ export default function App() {
 
   const onUploaded = (result: UploadResult) => {
     listDocuments().then(setDocs).catch(() => {});
-    // Kick off a streamed summary as the first assistant message, so the user
-    // immediately sees what's in the document before asking questions.
-    summarize(result.docId);
+    // Focus the freshly-uploaded document so the user can summarize or ask about
+    // it right away. Summarizing is now on-demand (a button) rather than
+    // automatic, to conserve the limited free-tier generation quota.
+    setSelectedDocId(result.docId);
   };
 
   const handleDelete = async (doc: IndexedDoc) => {
@@ -115,6 +116,16 @@ export default function App() {
                         </button>
                         <button
                           type="button"
+                          onClick={() => summarize(d.docId)}
+                          disabled={busy}
+                          aria-label={`Summarize ${d.source}`}
+                          title="Summarize this document"
+                          className="rounded-md px-1.5 py-1 text-slate-400 transition hover:bg-brand-50 hover:text-brand-600 disabled:cursor-not-allowed disabled:opacity-40"
+                        >
+                          ✨
+                        </button>
+                        <button
+                          type="button"
                           onClick={() => handleDelete(d)}
                           aria-label={`Delete ${d.source}`}
                           title="Delete document"
@@ -129,7 +140,8 @@ export default function App() {
                 <p className="mt-1.5 text-[11px] text-slate-500">
                   {selectedDoc
                     ? `Answering from “${selectedDoc.source}” only — click it again to search all.`
-                    : "Answering from all documents — click one to focus it."}
+                    : "Answering from all documents — click one to focus it."}{" "}
+                  Use ✨ to summarize a document.
                 </p>
               </>
             )}
