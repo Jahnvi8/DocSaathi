@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Visible focus states everywhere — a keyboard user must always be able to
+   see where they are. We keep the browser default outline suppressed only for
+   mouse users via :focus-visible. (Accessibility, step 7.) */
+@layer base {
+  :focus-visible {
+    outline: 2px solid theme("colors.brand.600");
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  body {
+    @apply bg-slate-50 text-slate-900 antialiased;
+  }
+}

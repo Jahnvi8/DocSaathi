@@ -1,0 +1,54 @@
+{
+  "document": "nimbus-handbook.txt",
+  "description": "Golden Q&A set for the Nimbus Logistics handbook. relevantText are exact substrings that must appear in a retrieved chunk for it to count as relevant (objective context precision/recall). expectedAnswerPoints are the facts a good answer should contain (used by the LLM judge).",
+  "items": [
+    {
+      "id": "founding",
+      "question": "When and where was Nimbus Logistics founded, and by whom?",
+      "relevantText": ["founded in 2019 in Pune by Aarav Mehta"],
+      "expectedAnswerPoints": ["2019", "Pune", "Aarav Mehta"]
+    },
+    {
+      "id": "fleet",
+      "question": "How many electric delivery vans does Nimbus operate?",
+      "relevantText": ["fleet of 340 electric delivery vans"],
+      "expectedAnswerPoints": ["340 electric delivery vans"]
+    },
+    {
+      "id": "sla",
+      "question": "What is the guaranteed delivery time for metro cities?",
+      "relevantText": ["24-hour delivery SLA for metro cities"],
+      "expectedAnswerPoints": ["24 hours", "metro cities"]
+    },
+    {
+      "id": "funding",
+      "question": "How much did Nimbus raise in its Series B round and who led it?",
+      "relevantText": ["Series B round of $45 million led by Evergreen Capital"],
+      "expectedAnswerPoints": ["$45 million", "Series B", "Evergreen Capital"]
+    },
+    {
+      "id": "security",
+      "question": "What encryption and security certification does TrackWise have?",
+      "relevantText": ["AES-256", "ISO 27001 certified"],
+      "expectedAnswerPoints": ["AES-256", "ISO 27001"]
+    },
+    {
+      "id": "support-languages",
+      "question": "In which languages is Nimbus customer support available?",
+      "relevantText": ["English, Hindi, and Tamil"],
+      "expectedAnswerPoints": ["English", "Hindi", "Tamil"]
+    },
+    {
+      "id": "emissions",
+      "question": "By how much has Nimbus cut its carbon emissions, and by when?",
+      "relevantText": ["reduced its carbon emissions by 38%"],
+      "expectedAnswerPoints": ["38%", "by 2025"]
+    },
+    {
+      "id": "workforce",
+      "question": "How many people work at Nimbus and what are delivery associates called?",
+      "relevantText": ["employs 4,200 people", "Nimbus Riders"],
+      "expectedAnswerPoints": ["4,200 people", "Nimbus Riders"]
+    }
+  ]
+}

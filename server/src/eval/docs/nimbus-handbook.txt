@@ -1,0 +1,31 @@
+Nimbus Logistics — Company Handbook (2026 Edition)
+
+About the Company
+Nimbus Logistics was founded in 2019 in Pune by Aarav Mehta, a former supply-chain engineer who wanted to make last-mile delivery faster and cleaner. What began as a two-person operation running a single delivery route has grown into one of India's most talked-about logistics startups. The company's mission is to deliver every parcel on time while shrinking the environmental cost of doing so. Throughout this handbook you will find the key facts every new employee, partner, and investor should know about how Nimbus works.
+
+Headquarters and Locations
+The company's headquarters is located in Hinjewadi, Pune, occupying three floors of the Aster Tech Park. In addition to the head office, Nimbus operates regional hubs in Chennai and Kolkata that coordinate deliveries across the southern and eastern zones respectively. Each regional hub is responsible for its own fleet dispatch, local hiring, and partner relationships, while central strategy and engineering remain in Pune. A smaller satellite office in Bengaluru houses part of the data-science team.
+
+Fleet and Infrastructure
+Nimbus operates a fleet of 340 electric delivery vans and maintains 12 warehouses across India. The warehouses are positioned to keep any metro delivery point within a two-hour drive of stored inventory. All vans are fitted with GPS units and temperature sensors, which means the same vehicles can carry both ordinary parcels and temperature-sensitive medical shipments. The fleet is charged overnight at hub-based charging stations powered partly by rooftop solar installations.
+
+Flagship Product: TrackWise
+The company's flagship platform, TrackWise, provides real-time parcel tracking with sub-minute location updates. Customers can watch their parcel move on a live map, receive predicted arrival windows, and reschedule a delivery with a single tap. Internally, TrackWise also powers route optimization: it recalculates the most efficient delivery order whenever traffic conditions change. TrackWise is offered both as a customer-facing app and as an API that enterprise partners embed in their own checkout flows.
+
+Delivery Commitments
+Nimbus guarantees a 24-hour delivery SLA for metro cities and 72 hours for tier-2 towns. If a delivery misses its SLA window, the customer automatically receives a credit toward their next shipment, with no need to file a complaint. These commitments are backed by the route-optimization engine in TrackWise and by the density of the warehouse network. Service-level performance is reviewed every quarter and published internally on the operations dashboard.
+
+Sustainability
+Sustainability is central to the Nimbus brand. By 2025, Nimbus reduced its carbon emissions by 38% through its transition to electric vehicles, the retirement of its older diesel vans, and the solar-assisted charging program. The company publishes an annual sustainability report and has committed to a fully electric fleet by 2027. Packaging is another focus area: Nimbus uses recyclable mailer bags and has eliminated single-use plastic tape across all warehouses.
+
+Our People
+The company employs 4,200 people, including 1,100 delivery associates known internally as "Nimbus Riders." Riders are considered the face of the company and receive paid safety training, insurance, and access to rest hubs at every warehouse. Beyond the riders, the workforce spans engineering, data science, operations, customer support, and corporate functions. Nimbus runs a structured mentorship program that pairs every new engineer with a senior buddy for their first ninety days.
+
+Funding and Investors
+In 2023, Nimbus raised a Series B round of $45 million led by Evergreen Capital, with participation from several existing investors. The capital is being used to expand the warehouse network, grow the engineering team, and accelerate the shift to electric vehicles. Prior to the Series B, the company had raised a Series A of $12 million in 2021. Nimbus has stated that it aims to reach operational profitability before pursuing any further external funding.
+
+Security and Compliance
+Data protection is taken seriously across the platform. TrackWise encrypts all parcel data using AES-256 and is ISO 27001 certified, reflecting an audited commitment to information-security best practices. Access to customer data is role-based and logged, and the company runs regular third-party penetration tests. Personal data is stored within India in compliance with local data-residency expectations, and retention periods are documented in the internal data-handling policy.
+
+Customer Support
+Customer support operates 24/7 in English, Hindi, and Tamil via the Nimbus Care helpline. Customers can also reach support through in-app chat and email, with most queries resolved on first contact. The support team escalates delivery exceptions directly to the relevant regional hub so that problems are solved close to where they occur. Feedback collected through support channels feeds into the quarterly service review.
