@@ -10,14 +10,6 @@ DocSaathi is a full-stack, multilingual AI document-chat app built on **Retrieva
 
 ## ✨ Features
 
-- **📤 Document upload** — PDF and `.txt`, with text extraction and smart chunking.
-- **🧠 Advanced retrieval pipeline** — composable **hybrid search** (BM25 + vectors, fused with RRF), optional **LLM query rewriting** and **reranking**, and optional **contextual retrieval**. See [Retrieval architecture](#-retrieval-architecture-advanced-rag).
-- **📊 Evaluation harness** — `npm run eval` runs an ablation with RAGAS-style metrics (context recall/precision, faithfulness, answer relevance) and prints a scorecard. See [Evaluation](#-evaluation-measuring-retrieval-quality).
-- **⚡ Token streaming** — answers appear word-by-word over Server-Sent Events (SSE).
-- **🔗 Clickable citations** — every answer cites its sources; click a citation to scroll to and highlight the passage.
-- **🌐 Multilingual** — ask in English, Hindi (Devanagari), or Hinglish; the model replies in kind.
-- **🎙️ Hindi voice input** — dictate your question with the mic button (`hi-IN`).
-- **♿ Accessibility-conscious** — semantic HTML, keyboard-navigable chat & citations, `aria-live` streaming, visible focus states.
 
 ---
 
