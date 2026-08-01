@@ -13,9 +13,9 @@ interface Props {
 function EmptyState({ hasDocs }: { hasDocs: boolean }) {
   return (
     <div className="grid h-full place-items-center p-8 text-center">
-      <div className="max-w-sm text-slate-500">
+      <div className="max-w-sm text-faint">
         <div className="text-4xl">💬</div>
-        <p className="mt-3 font-medium text-slate-700">
+        <p className="mt-3 font-medium text-muted">
           {hasDocs ? "Ask your first question" : "Upload a document to get started"}
         </p>
         <p className="mt-1 text-sm">
@@ -30,7 +30,7 @@ function EmptyState({ hasDocs }: { hasDocs: boolean }) {
 
 export function ChatPanel({ messages, busy, hasDocs, onSend, onCitationClick }: Props) {
   return (
-    <section className="flex h-full flex-col bg-slate-50" aria-label="Chat">
+    <section className="flex h-full flex-col bg-ground" aria-label="Chat">
       <div className="min-h-0 flex-1">
         {messages.length === 0 ? (
           <EmptyState hasDocs={hasDocs} />
@@ -38,9 +38,9 @@ export function ChatPanel({ messages, busy, hasDocs, onSend, onCitationClick }: 
           <MessageList messages={messages} onCitationClick={onCitationClick} />
         )}
       </div>
-      <div className="border-t border-slate-200 bg-white p-3">
+      <div className="border-t border-line bg-surface p-3">
         <Composer onSend={onSend} disabled={busy || !hasDocs} />
-        <p className="mt-1.5 text-center text-xs text-slate-400">
+        <p className="mt-1.5 text-center text-xs text-faint">
           DocSaathi answers only from your uploaded documents, with citations.
         </p>
       </div>

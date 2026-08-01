@@ -61,7 +61,7 @@ export function UploadDropzone({ onUploaded }: Props) {
         onDrop={onDrop}
         className={[
           "flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed px-4 py-6 text-center transition",
-          dragging ? "border-brand-500 bg-brand-50" : "border-slate-300 bg-white hover:border-brand-400",
+          dragging ? "border-accent bg-accent-soft" : "border-line bg-surface hover:border-accent",
         ].join(" ")}
       >
         <input
@@ -72,16 +72,16 @@ export function UploadDropzone({ onUploaded }: Props) {
           onChange={(e) => handleFile(e.target.files?.[0])}
         />
         {uploading ? (
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-muted">
             <span className="mr-2 inline-block animate-spin">⏳</span>
             Indexing “{status.kind === "uploading" ? status.name : ""}”…
           </p>
         ) : (
           <>
-            <p className="text-sm font-medium text-slate-700">
+            <p className="text-sm font-medium text-muted">
               Drop a PDF or .txt here, or click to choose
             </p>
-            <p className="mt-1 text-xs text-slate-400">Max 15 MB</p>
+            <p className="mt-1 text-xs text-faint">Max 15 MB</p>
           </>
         )}
       </div>

@@ -24,9 +24,9 @@ export function useToast(): ToastApi {
 }
 
 const STYLES: Record<ToastKind, string> = {
-  success: "border-green-200 bg-green-50 text-green-800",
-  error: "border-red-200 bg-red-50 text-red-800",
-  info: "border-brand-200 bg-brand-50 text-brand-800",
+  success: "border-ok-border bg-ok-soft text-ok-text",
+  error: "border-danger-border bg-danger-soft text-danger-text",
+  info: "border-accent bg-accent-soft text-saffron",
 };
 const ICONS: Record<ToastKind, string> = { success: "✅", error: "⚠️", info: "ℹ️" };
 

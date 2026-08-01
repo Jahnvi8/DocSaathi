@@ -70,7 +70,7 @@ export function Composer({ onSend, disabled }: Props) {
           onKeyDown={onKeyDown}
           rows={1}
           placeholder="Ask in English, हिंदी, or Hinglish…"
-          className="min-h-[44px] max-h-40 flex-1 resize-y rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none"
+          className="min-h-[44px] max-h-40 flex-1 resize-y rounded-xl border border-line bg-surface px-3 py-2.5 text-ink placeholder:text-faint focus:border-accent focus:outline-none"
         />
 
         {supported && (
@@ -83,8 +83,8 @@ export function Composer({ onSend, disabled }: Props) {
             className={[
               "grid h-11 w-11 shrink-0 place-items-center rounded-xl border transition",
               listening
-                ? "animate-pulse border-red-300 bg-red-100 text-red-600"
-                : "border-slate-300 bg-white text-slate-600 hover:bg-slate-50",
+                ? "animate-pulse border-danger-border bg-danger-soft text-danger"
+                : "border-line bg-surface text-muted hover:bg-ground",
             ].join(" ")}
           >
             🎙️
@@ -94,19 +94,19 @@ export function Composer({ onSend, disabled }: Props) {
         <button
           type="submit"
           disabled={disabled || !text.trim()}
-          className="h-11 shrink-0 rounded-xl bg-brand-600 px-4 font-medium text-white transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-40"
+          className="h-11 shrink-0 rounded-xl bg-accent-deep px-4 font-medium text-white transition hover:bg-accent disabled:cursor-not-allowed disabled:opacity-40"
         >
           Send
         </button>
       </form>
 
       {listening && (
-        <p className="mt-1 text-xs text-red-500" aria-live="polite">
+        <p className="mt-1 text-xs text-danger" aria-live="polite">
           🔴 Listening… speak in Hindi.
         </p>
       )}
       {voiceError && (
-        <p role="alert" className="mt-1 text-xs text-red-500">
+        <p role="alert" className="mt-1 text-xs text-danger">
           {voiceError}
         </p>
       )}

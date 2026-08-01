@@ -43,13 +43,13 @@ export function DocumentViewer({ citation }: Props) {
 
   return (
     <aside
-      className="hidden min-h-0 flex-col overflow-hidden bg-white md:flex"
+      className="hidden min-h-0 flex-col overflow-hidden bg-surface md:flex"
       aria-label="Source document viewer"
     >
-      <div className="border-b border-slate-200 px-4 py-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Source</h2>
+      <div className="border-b border-line px-4 py-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-faint">Source</h2>
         {citation && (
-          <p className="mt-0.5 truncate text-sm text-slate-700">
+          <p className="mt-0.5 truncate text-sm text-muted">
             📄 {citation.source}
             {citation.page != null ? ` · page ${citation.page}` : ""}
           </p>
@@ -58,15 +58,15 @@ export function DocumentViewer({ citation }: Props) {
 
       <div className="min-h-0 flex-1 overflow-auto px-4 py-3">
         {!citation && (
-          <p className="text-sm text-slate-400">
-            Click a citation like <span className="font-semibold text-brand-600">[1]</span> in an
+          <p className="text-sm text-faint">
+            Click a citation like <span className="font-semibold text-accent-deep">[1]</span> in an
             answer to jump to the exact source passage here.
           </p>
         )}
 
-        {loading && <p className="text-sm text-slate-400">Loading document…</p>}
+        {loading && <p className="text-sm text-faint">Loading document…</p>}
         {error && (
-          <p role="alert" className="text-sm text-red-600">
+          <p role="alert" className="text-sm text-danger">
             {error}
           </p>
         )}
@@ -83,12 +83,12 @@ export function DocumentViewer({ citation }: Props) {
                   className={[
                     "rounded-lg p-3 text-sm leading-relaxed transition",
                     isActive
-                      ? "bg-amber-100 ring-2 ring-amber-400 text-slate-900"
-                      : "bg-slate-50 text-slate-600",
+                      ? "bg-saffron-soft ring-2 ring-saffron text-ink"
+                      : "bg-ground text-muted",
                   ].join(" ")}
                 >
                   {chunk.page != null && (
-                    <span className="mb-1 block text-xs font-medium text-slate-400">
+                    <span className="mb-1 block text-xs font-medium text-faint">
                       page {chunk.page}
                     </span>
                   )}

@@ -55,17 +55,17 @@ export default function App() {
       {/* Keyboard users can jump straight to the input, skipping the header/upload. */}
       <a
         href="#composer"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded focus:bg-brand-600 focus:px-3 focus:py-2 focus:text-white"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded focus:bg-accent-deep focus:px-3 focus:py-2 focus:text-white"
       >
         Skip to chat input
       </a>
 
       {/* Header */}
-      <header className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3">
+      <header className="flex items-center justify-between border-b border-line bg-surface px-4 py-3">
         <div className="flex items-center gap-2">
           <span className="text-xl">📄🤝</span>
-          <h1 className="text-lg font-bold text-brand-700">DocSaathi</h1>
-          <span className="hidden text-sm text-slate-400 sm:inline">
+          <h1 className="text-lg font-bold text-accent">DocSaathi</h1>
+          <span className="hidden text-sm text-faint sm:inline">
             — chat with your documents
           </span>
         </div>
@@ -73,7 +73,7 @@ export default function App() {
 
       {/* Missing-key banner */}
       {!hasApiKey && (
-        <div role="alert" className="bg-amber-50 px-4 py-2 text-sm text-amber-800">
+        <div role="alert" className="bg-saffron-soft px-4 py-2 text-sm text-saffron">
           ⚠️ No Gemini API key configured. Add <code className="font-mono">GEMINI_API_KEY</code> to
           your <code className="font-mono">.env</code> (get one free at{" "}
           <a
@@ -91,8 +91,8 @@ export default function App() {
       {/* Main two-column layout */}
       <main className="grid min-h-0 flex-1 md:grid-cols-2">
         {/* Left: upload + chat */}
-        <div className="flex min-h-0 flex-col md:border-r md:border-slate-200">
-          <div className="border-b border-slate-200 bg-white p-3">
+        <div className="flex min-h-0 flex-col md:border-r md:border-line">
+          <div className="border-b border-line bg-surface p-3">
             <UploadDropzone onUploaded={onUploaded} />
             {hasDocs && (
               <>
@@ -108,8 +108,8 @@ export default function App() {
                           title={active ? "Click to search all documents" : "Click to ask only this document"}
                           className={`flex-1 truncate rounded-md px-2 py-1 text-left text-xs transition ${
                             active
-                              ? "bg-brand-600 text-white"
-                              : "bg-brand-50 text-brand-700 hover:bg-brand-100"
+                              ? "bg-accent-deep text-white"
+                              : "bg-accent-soft text-accent hover:bg-accent-softer"
                           }`}
                         >
                           📄 {d.source} · {d.chunkCount} chunks
@@ -120,7 +120,7 @@ export default function App() {
                           disabled={busy}
                           aria-label={`Summarize ${d.source}`}
                           title="Summarize this document"
-                          className="rounded-md px-1.5 py-1 text-slate-400 transition hover:bg-brand-50 hover:text-brand-600 disabled:cursor-not-allowed disabled:opacity-40"
+                          className="rounded-md px-1.5 py-1 text-faint transition hover:bg-accent-soft hover:text-accent-deep disabled:cursor-not-allowed disabled:opacity-40"
                         >
                           ✨
                         </button>
@@ -129,7 +129,7 @@ export default function App() {
                           onClick={() => handleDelete(d)}
                           aria-label={`Delete ${d.source}`}
                           title="Delete document"
-                          className="rounded-md p-1 text-slate-400 transition hover:bg-red-50 hover:text-red-600"
+                          className="rounded-md p-1 text-faint transition hover:bg-danger-soft hover:text-danger"
                         >
                           🗑️
                         </button>
@@ -137,7 +137,7 @@ export default function App() {
                     );
                   })}
                 </ul>
-                <p className="mt-1.5 text-[11px] text-slate-500">
+                <p className="mt-1.5 text-[11px] text-faint">
                   {selectedDoc
                     ? `Answering from “${selectedDoc.source}” only — click it again to search all.`
                     : "Answering from all documents — click one to focus it."}{" "}

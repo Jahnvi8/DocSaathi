@@ -6,12 +6,20 @@
    see where they are. We keep the browser default outline suppressed only for
    mouse users via :focus-visible. (Accessibility, step 7.) */
 @layer base {
+  /* Warm dark theme: set color-scheme so form controls/scrollbars render dark,
+     and paint the ground on <html> to avoid a white flash before styles load. */
+  :root {
+    color-scheme: dark;
+  }
+  html {
+    background: theme("colors.ground");
+  }
   :focus-visible {
-    outline: 2px solid theme("colors.brand.600");
+    outline: 2px solid theme("colors.accent.bright");
     outline-offset: 2px;
     border-radius: 4px;
   }
   body {
-    @apply bg-slate-50 text-slate-900 antialiased;
+    @apply bg-ground text-ink antialiased;
   }
 }
