@@ -1,5 +1,8 @@
 import express, { type NextFunction, type Request, type Response } from "express";
 import cors from "cors";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { config, hasApiKey } from "./config.js";
 import uploadRouter from "./routes/upload.js";
 import documentsRouter from "./routes/documents.js";
@@ -25,6 +28,21 @@ app.use("/api/upload", uploadRouter);
 app.use("/api/documents", documentsRouter);
 app.use("/api/chat", chatRouter);
 app.use("/api/summary", summaryRouter);
+
+// Production: serve the built React client from this same process, so one
+// deployment (e.g. a single Render web service) hosts both the UI and the API.
+// In development Vite serves the client on :5173 and proxies /api here, so the
+// dist folder doesn't exist and this block is skipped.
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const clientDist = path.resolve(__dirname, "..", "..", "client", "dist");
+if (fs.existsSync(clientDist)) {
+  app.use(express.static(clientDist));
+  // SPA fallback: any non-API route returns index.html so client-side routing works.
+  app.get(/^(?!\/api\/).*/, (_req, res) => {
+    res.sendFile(path.join(clientDist, "index.html"));
+  });
+  console.log(`📦 Serving client from ${clientDist}`);
+}
 
 // Central error handler. Any error thrown in a route (or passed to next(err))
 // lands here and returns a clean JSON message instead of crashing the process.

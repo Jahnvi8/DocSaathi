@@ -1,0 +1,44 @@
+# Render Blueprint — deploys DocSaathi as ONE web service that hosts both the
+# Express API and the built React client (Express serves client/dist).
+#
+# In the Render dashboard: New → Blueprint → pick this repo. Render reads this
+# file, creates the service, and prompts you for GEMINI_API_KEY.
+#
+# Docs: https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: docsaathi
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: GEMINI_API_KEY
+        sync: false # set this in the dashboard; never commit it
+      - key: GEMINI_CHAT_MODEL
+        value: gemini-flash-latest
+      - key: GEMINI_EMBED_MODEL
+        value: gemini-embedding-001
+      - key: RAG_HYBRID
+        value: "true"
+      - key: RAG_QUERY_REWRITE
+        value: "false"
+      - key: RAG_RERANK
+        value: "false"
+    # ── Persistence ──────────────────────────────────────────────────────────
+    # The vector store is a JSON file. On the free plan the filesystem is
+    # ephemeral: uploaded documents are lost whenever the service restarts or
+    # redeploys (fine for a demo — just re-upload). To keep them, move to the
+    # Starter plan and uncomment the disk below (also uncomment STORE_PATH).
+    #
+    # disk:
+    #   name: docsaathi-data
+    #   mountPath: /var/data
+    #   sizeGB: 1
+    #
+    # …and add to envVars:
+    #   - key: STORE_PATH
+    #     value: /var/data/store.json

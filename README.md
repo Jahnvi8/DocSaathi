@@ -196,6 +196,36 @@ Open **http://localhost:5173**, upload a document, and start chatting.
 
 ---
 
+## ☁️ Deploying (Render, one service)
+
+In production, Express serves the built React client from `client/dist`, so the
+whole app runs as **one** Node web service — no separate frontend host, no CORS
+config, and SSE streaming works because it's a long-running process (not
+serverless). A [`render.yaml`](render.yaml) Blueprint is included.
+
+1. Push the repo to GitHub.
+2. In [Render](https://dashboard.render.com): **New → Blueprint → select this repo**.
+   Render reads `render.yaml` and creates the `docsaathi` web service.
+3. When prompted, paste your `GEMINI_API_KEY`. Everything else has defaults.
+4. Wait for the build (`npm ci && npm run build`) and open the service URL.
+
+To run the production build locally:
+
+```bash
+npm run build && npm start     # serves UI + API together on http://localhost:3001
+```
+
+**Persistence note:** the vector store is a JSON file on disk. On Render's free
+plan the filesystem is ephemeral, so uploaded documents disappear on restart or
+redeploy (just re-upload — fine for a demo). For durable storage, upgrade the
+service and uncomment the `disk` + `STORE_PATH` lines in `render.yaml`.
+
+Any host that runs a plain Node process works the same way (Railway, Fly.io, a
+VPS). Vercel/Netlify functions are **not** a good fit: they drop the on-disk
+store between invocations and cut off long SSE streams.
+
+---
+
 ## 🛠️ Tech stack & why
 
 | Layer | Choice | Why |
