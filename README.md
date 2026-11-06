@@ -160,7 +160,7 @@ DocSaathi/
 
 Go to **[Google AI Studio → API keys](https://aistudio.google.com/app/apikey)**, sign in with a Google account, click **Create API key**, and copy it. The free tier is enough for this app.
 
-> **Note on models & quota:** DocSaathi defaults to `gemini-flash-latest` (chat) and `gemini-embedding-001` (embeddings) — both configurable in `.env`. Free-tier quota is **per-model** and varies by project/region, so a specific model (e.g. `gemini-2.0-flash`) may report a `429` with `limit: 0` even though your key is valid. If that happens, list the models your key can use with:
+> **Note on models & quota:** DocSaathi defaults to `gemini-3.6-flash` (chat) and `gemini-embedding-001` (embeddings) — both configurable in `.env`. A pinned model is used instead of the `gemini-flash-latest` alias because the alias has returned `503 high demand` for long stretches while pinned models answered normally. Free-tier quota is **per-model** and varies by project/region, so a specific model (e.g. `gemini-2.0-flash`) may report a `429` with `limit: 0` even though your key is valid. If that happens, list the models your key can use with:
 > ```bash
 > curl "https://generativelanguage.googleapis.com/v1beta/models?key=YOUR_KEY"
 > ```

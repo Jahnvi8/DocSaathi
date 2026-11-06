@@ -21,7 +21,10 @@ const topK = Number(process.env.RAG_TOP_K) || 4;
 export const config = {
   port: Number(process.env.PORT) || 3001,
   geminiApiKey: process.env.GEMINI_API_KEY?.trim() || "",
-  chatModel: process.env.GEMINI_CHAT_MODEL?.trim() || "gemini-flash-latest",
+  // Pinned to a concrete model rather than the "-latest" alias: the alias has
+  // been returning 503 "high demand" for extended periods while pinned models
+  // answer normally. Override with GEMINI_CHAT_MODEL if needed.
+  chatModel: process.env.GEMINI_CHAT_MODEL?.trim() || "gemini-3.6-flash",
   embedModel: process.env.GEMINI_EMBED_MODEL?.trim() || "gemini-embedding-001",
   topK,
   // Retrieval pipeline toggles (Track A). Defaults are the "best" config; the
