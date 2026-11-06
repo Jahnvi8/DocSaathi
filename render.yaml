@@ -10,12 +10,13 @@ services:
     name: docsaathi
     runtime: node
     plan: free
-    buildCommand: npm ci && npm run build
+    # --include=dev is required: the build needs TypeScript, Vite and Tailwind,
+    # which are devDependencies. (Do NOT set NODE_ENV=production here — that
+    # makes `npm ci` skip devDependencies and the build fails with "tsc: not found".)
+    buildCommand: npm ci --include=dev && npm run build
     startCommand: npm start
     healthCheckPath: /api/health
     envVars:
-      - key: NODE_ENV
-        value: production
       - key: GEMINI_API_KEY
         sync: false # set this in the dashboard; never commit it
       - key: GEMINI_CHAT_MODEL

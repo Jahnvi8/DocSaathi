@@ -207,7 +207,11 @@ serverless). A [`render.yaml`](render.yaml) Blueprint is included.
 2. In [Render](https://dashboard.render.com): **New → Blueprint → select this repo**.
    Render reads `render.yaml` and creates the `docsaathi` web service.
 3. When prompted, paste your `GEMINI_API_KEY`. Everything else has defaults.
-4. Wait for the build (`npm ci && npm run build`) and open the service URL.
+4. Wait for the build (`npm ci --include=dev && npm run build`) and open the service URL.
+
+> Don't set `NODE_ENV=production` as an env var on the host: it makes `npm ci`
+> skip devDependencies (TypeScript, Vite) and the build fails. The app doesn't
+> need it.
 
 To run the production build locally:
 
